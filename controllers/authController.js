@@ -34,6 +34,7 @@ class AuthController {
             // getting the user's data and adding the hashed password to it
             const userData = {
                 email: req.body.email,
+                handle: req.body.handle,
                 password: hash
             }
 
@@ -52,7 +53,7 @@ class AuthController {
 
 
         } catch (error) {
-            throw error;
+            next(error);
         }
     }
 
@@ -67,7 +68,7 @@ class AuthController {
 
 
             // checking if the user exists in the database
-            const foundUser = await userService.findOne({ email: userData.email });
+            const foundUser = await userService.findOne({ $or: [{ email: userData.email }, { handle: userData.handle }] });
             if (!foundUser)
                 return next(new AppError(`User with that email does not exist`, 404))
 
@@ -89,7 +90,7 @@ class AuthController {
                 .json({ status: "success", message: "user logged in successfully", token })
 
         } catch (error) {
-            throw error;
+            next(error);;
         }
     }
 }
