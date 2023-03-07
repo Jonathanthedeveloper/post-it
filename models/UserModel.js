@@ -9,6 +9,11 @@ const userSchema = new Schema({
     password: {
         type: String,
         required: [true, "password is required"],
+    },
+    handle: {
+        type: String,
+        required: [true, "handle is required"],
+        unique: true,
     }
 }, {
     timestamps: true,

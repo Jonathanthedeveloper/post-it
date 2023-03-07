@@ -24,6 +24,14 @@ class UserService {
         }
     }
 
+    async findAll(filter) {
+        try {
+            return await this.model.find(filter);
+        } catch (error) {
+            throw error;
+        }
+    }
+
 }
 
 module.exports = new UserService(User);
