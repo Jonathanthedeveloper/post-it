@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 const userService = require("../services/userService");
 const { JWT_EXPIRES_IN } = require('../config');
+const AppError = require('../utils/AppErrorUtil');
 
 
 
@@ -15,14 +16,14 @@ class AuthController {
     // else hash user's password
     // store in database
     // sign user using jwt
-    async createUser(req, res) {
+    async createUser(req, res, next) {
         try {
 
             // checking if the user with that email already exists
             const userExists = await userService.findOne({ email: req.body.email });
-            if (userExists)
-                return res.status(409).json({ success: false, message: "user with that email already exists" });
 
+            // thoring an error if user exists
+            if (userExists) next(new AppError(`User with that email already exists`, 409));
 
             // Generating random salts and hashing users password
             const salt = await bcrypt.genSalt(10);
@@ -45,12 +46,12 @@ class AuthController {
             // send the token along side data for client to store 
             res
                 .status(201)
-                .json({ success: true, message: "user created successfully", token, data: { user: createdUser } })
+                .json({ status: "success", message: "user created successfully", token, data: { user: createdUser } })
 
 
 
         } catch (error) {
-            res.status(400).json({ success: false, message: error.message });
+            throw error;
         }
     }
 
@@ -59,21 +60,21 @@ class AuthController {
     // login in a user
     // check if the  user exists in the database
     // then compare their password against the database  returned user password
-    async loginUser(req, res) {
+    async loginUser(req, res, next) {
         try {
             const userData = { ...req.body };
 
 
             // checking if the user exists in the database
             const foundUser = await userService.findOne({ email: userData.email });
-            if (!foundUser)
-                return res.status(404).json({ success: false, message: "invalid email or password" });
+            if (!foundUser) next(new AppError(`User with that email does not exist`, 404))
 
 
             // Comparing User's password with the returned password from the database
             const passwordIsValid = await bcrypt.compare(userData.password, foundUser.password);
-            if (!passwordIsValid)
-                return res.status(404).json({ success: false, message: "invalid email or password" });
+
+            // throwing an error if password is not valid
+            if (!passwordIsValid) next(new AppError(`User with that email does not exist`, 404));
 
             // signing the user if their password is correct
             const token = jwt.sign({ email: foundUser.email }, process.env.JWT_SECRET_TOKEN, { expiresIn: JWT_EXPIRES_IN });
@@ -82,10 +83,10 @@ class AuthController {
             // returning the token along side the response for client to store
             res
                 .status(200)
-                .json({ success: true, message: "user logged in successfully", token })
+                .json({ status: "success", message: "user logged in successfully", token })
 
         } catch (error) {
-            res.status(400).json({ success: false, message: error.message });
+            throw error;
         }
     }
 }
