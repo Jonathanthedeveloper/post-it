@@ -23,7 +23,8 @@ class AuthController {
             const userExists = await userService.findOne({ email: req.body.email });
 
             // thoring an error if user exists
-            if (userExists) next(new AppError(`User with that email already exists`, 409));
+            if (userExists)
+                return next(new AppError(`User with that email already exists`, 409));
 
             // Generating random salts and hashing users password
             const salt = await bcrypt.genSalt(10);
@@ -67,14 +68,16 @@ class AuthController {
 
             // checking if the user exists in the database
             const foundUser = await userService.findOne({ email: userData.email });
-            if (!foundUser) next(new AppError(`User with that email does not exist`, 404))
+            if (!foundUser)
+                return next(new AppError(`User with that email does not exist`, 404))
 
 
             // Comparing User's password with the returned password from the database
             const passwordIsValid = await bcrypt.compare(userData.password, foundUser.password);
 
             // throwing an error if password is not valid
-            if (!passwordIsValid) next(new AppError(`User with that email does not exist`, 404));
+            if (!passwordIsValid)
+                return next(new AppError(`User with that email does not exist`, 404));
 
             // signing the user if their password is correct
             const token = jwt.sign({ email: foundUser.email }, process.env.JWT_SECRET_TOKEN, { expiresIn: JWT_EXPIRES_IN });
