@@ -1,0 +1,27 @@
+{
+  "name": "post-it",
+  "version": "1.0.0",
+  "description": "A social media API",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:prod": "node server.js",
+    "start:dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Jonathanthedeveloper/post-it.git"
+  },
+  "author": "Jonathan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jonathanthedeveloper/post-it/issues"
+  },
+  "homepage": "https://github.com/Jonathanthedeveloper/post-it#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongoose": "^7.0.1",
+    "morgan": "^1.10.0"
+  }
+}
