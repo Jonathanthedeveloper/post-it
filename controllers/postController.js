@@ -44,7 +44,7 @@ class PostController {
     async getAllPosts(req, res, next) {
         try {
             const query = new APIFeatures(Post.find({}), req.query).limitFields().sort().paginate();
-            const posts = await query.query.populate('user');
+            const posts = await query.query.populate('user comments');
             res.status(200).json({ "status": "success", data: { posts } })
         } catch (error) {
             next(error)

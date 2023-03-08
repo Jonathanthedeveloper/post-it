@@ -1,0 +1,40 @@
+const commentService = require('../services/commentService');
+const userService = require('../services/userService');
+const postService = require('../services/postService');
+
+/**
+ * @class CommentController
+ * @description CRUD operations on comments
+ */
+class CommentController {
+
+    /**
+     * creates a comment
+     * @param {Request} req 
+     * @param {Response} res 
+     * @param {NextFunction} next 
+     * 
+     * ALGORITHM:
+     * create a comment
+     * push it's object it to the post comments array
+     */
+    async createComment(req, res, next) {
+        try {
+            const commentData = {
+                content: req.body.content,
+                user: req.user.id
+            }
+            const newComment = await commentService.create(commentData)
+            // await userService.update({ _id: req.user.id }, { $push: { comments: newComment.id } });
+            console.log(req.params.id, newComment)
+            await postService.update({ _id: req.params.id }, { $push: { comments: newComment._id } });
+
+            res.status(200).json({ status: "success", message: "user successfully commented", data: { comment: newComment } })
+        } catch (error) {
+            next(error);
+        }
+    }
+
+}
+
+module.exports = new CommentController;
