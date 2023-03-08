@@ -10,11 +10,11 @@ class CommentService {
     }
 
     async fetchOne(filter) {
-        return await this.model.findOne(filter)
+        return await this.model.findOne(filter).populate('likes user')
     }
 
     async fetchAll(filter = {}) {
-        return await this.model.find(filter)
+        return await this.model.find(filter).populate('likes user')
     }
 
     async update(filter, updateData) {
