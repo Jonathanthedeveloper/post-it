@@ -15,6 +15,10 @@ const userSchema = new Schema({
         required: [true, "handle is required"],
         unique: true,
     },
+    bio: {
+        type: String,
+        max: 250
+    },
     posts: {
         type: [Schema.Types.ObjectId],
         ref: 'Post',

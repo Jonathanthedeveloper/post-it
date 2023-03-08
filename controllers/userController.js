@@ -55,6 +55,45 @@ class UserController {
             next(error);
         }
     }
+
+
+    async editAUser(req, res, next) {
+        try {
+
+            console.log(req.params.handle, "SPACE", req.user.handle)
+
+            if (req.params.handle !== req.user.handle)
+                return next(new AppError("You cannot edit another user's profile", 403));
+
+            const user = await userService.findOne({ handle: req.params.handle });
+            if (!user)
+                return next(new AppError(`User with handle @${req.params.handle} does not exist`, 404));
+
+            if (req.body.password || req.body.email)
+                return next(new AppError("You cannot change security information from this route", 403));
+
+            if (req.body.handle) {
+                const userExists = await userService.findOne({ handle: req.body.handle })
+
+                if (userExists)
+                    return next(new AppError(`User with handle @${req.body.handle} already exists`, 400));
+            }
+
+            const updateData = {
+                handle: req.body.handle || user.handle,
+                bio: req.body.bio || user.bio
+            }
+
+            const updatedUser = await userService.update({ handle: req.params.handle }, updateData);
+
+
+            res.status(200).json({ status: "success", data: { user: updatedUser } })
+
+
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 
