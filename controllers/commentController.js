@@ -4,6 +4,7 @@ const postService = require('../services/postService');
 const Comment = require('../models/CommentModel');
 const APIFeatures = require('../utils/APIFeaturesUtil');
 const AppError = require('../utils/AppErrorUtil');
+const Post = require('../models/PostModel');
 
 /**
  * @class CommentController
@@ -54,9 +55,22 @@ class CommentController {
     async getAllComments(req, res, next) {
         try {
 
-            const query = new APIFeatures(Comment.find(), req.query).limitFields().sort().paginate();
 
-            const comments = await query.query.populate('user likes')
+            console.log(req.params.postId)
+
+            // const post = await postService.findOne({ _id: req.params.postId });
+
+            // const comments = await Post.aggregate([
+            //     {
+            //         $match: {
+            //             _id: req.params.postId
+            //         }
+            //     }
+            // ])
+
+            const comments = await Post.findById(req.params.postId).populate('comments').select('comments -_id').populate('user')
+
+            // const { comments } = post
 
             res.status(200).json({ status: "success", message: 'comments successfully retrieved', results: comments.length, data: { comments } })
         } catch (error) {
@@ -109,6 +123,23 @@ class CommentController {
             const updatedComment = await commentService.update({ _id: req.params.commentId }, { content: req.body.content });
 
             res.status(200).json({ status: "success", message: "comment successfully updated", data: { comment: updatedComment } })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async deleteComment(req, res, next) {
+        try {
+            const comment = await commentService.fetchOne({ _id: req.params.commentId });
+            if (!comment)
+                return next(new AppError("comment not found", 404));
+
+            if (comment.user._id.toString() !== req.user.id)
+                return next(new AppError("you cannot delete this comment", 403));
+
+            const deleted = await commentService.update({ _id: req.params.commentId }, { isDeleted: true, deletedAt: Date.now() });
+
+            res.status(204).json({ status: "success", message: "comment successfully deleted", data: deleted })
         } catch (error) {
             next(error)
         }

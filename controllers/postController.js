@@ -107,6 +107,27 @@ class PostController {
         }
     }
 
+    async deletePost(req, res, next) {
+        try {
+
+            const post = await postService.findOne({ _id: req.params.postId });
+            if (!post)
+                next(new AppError("Post not found", 404));
+
+            if (req.user.id !== post.user._id.toString())
+                return next(new AppError("you can't delete this post", 403));
+
+            await postService.update({ _id: req.params.postId }, { isDeleted: true, deletedAt: Date.now() });
+
+            res
+                .status(204)
+                .json({ "status": "success", message: "post deleted successfully", data: null })
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
 }
 
 module.exports = new PostController();

@@ -1,3 +1,5 @@
+const bcrypt = require("bcrypt");
+
 const userService = require("../services/userService");
 const APIFeatures = require("../utils/APIFeaturesUtil");
 const AppError = require("../utils/AppErrorUtil");
@@ -92,6 +94,37 @@ class UserController {
 
         } catch (error) {
             next(error);
+        }
+    }
+
+
+    async deleteUser(req, res, next) {
+        try {
+            if (req.user.handle !== req.params.handle)
+                return next(new AppError("You cannot delete another user's account", 403));
+
+
+            const user = await userService.findOne({ handle: req.params.handle });
+            if (!user)
+                return next(new AppError(`User with handle @${req.params.handle} does not exist`, 404));
+
+            if (!req.body.password)
+                return next(new AppError("Please provide your password", 400));
+
+            const passwordIsValid = await bcrypt.compare(req.body.password, user.password);
+            if (!passwordIsValid)
+                return next(new AppError("Invalid password", 400));
+
+            await userService.update({ handle: req.params.handle }, { isDeleted: true, deletedAt: Date.now() });
+
+
+            res
+                .status(204)
+                .clearCookie("token")
+                .json({ status: "success", message: "account deleted successfully", data: null })
+
+        } catch (error) {
+            next(error)
         }
     }
 }
