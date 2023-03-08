@@ -19,7 +19,7 @@ class PostService {
     }
 
     async update(filter, updateData) {
-        return await this.model.updateOne(filter, updateData, { new: true, runValidators: true })
+        return await this.model.findOneAndUpdate(filter, updateData, { new: true, runValidators: true })
     }
 }
 

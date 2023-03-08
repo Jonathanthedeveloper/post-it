@@ -16,6 +16,10 @@ class CommentService {
     async fetchAll(filter = {}) {
         return await this.model.find(filter)
     }
+
+    async update(filter, updateData) {
+        return await this.model.findOneAndUpdate(filter, updateData, { new: true, runValidators: true })
+    }
 }
 
 module.exports = new CommentService(Comment);
