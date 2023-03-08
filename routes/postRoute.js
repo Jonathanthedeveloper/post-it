@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 
-const { createPost, getAllPosts, getAPost, likePost, unlikePost } = require('../controllers/postController');
+const { createPost, getAllPosts, getAPost, likePost, unlikePost, editAPost } = require('../controllers/postController');
 const { createComment, getAllComments, getAComment, likeComment, unlikeComment } = require('../controllers/commentController');
 
 
@@ -9,6 +9,7 @@ const { createComment, getAllComments, getAComment, likeComment, unlikeComment }
 router.post('/', createPost)
 router.get('/', getAllPosts)
 router.get('/:postId', getAPost)
+router.put('/:postId', editAPost)
 
 
 // like and unlike a post

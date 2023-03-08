@@ -85,6 +85,28 @@ class PostController {
         }
     }
 
+    async editAPost(req, res, next) {
+        try {
+
+            const post = await postService.findOne({ _id: req.params.postId });
+            if (!post)
+                return next(new AppError("Post not found", 404));
+
+
+            if (req.user.id !== post.user._id.toString())
+                return next(new AppError("you can't edit this post", 403));
+
+            if (!req.body.content)
+                return next(new AppError("Content is required", 400));
+
+            const updatedPost = await postService.update({ _id: req.params.postId }, { content: req.body.content });
+
+            res.status(200).json({ "status": "success", message: "post updated successfully", data: { post: updatedPost } })
+        } catch (error) {
+            next(error)
+        }
+    }
+
 }
 
 module.exports = new PostController();

@@ -1,6 +1,6 @@
 Implement soft delete on all resources.
 
-Users can {create}, update or delete their accounts.
+Users can {create}, {update} or delete their accounts.
 
 Users can {create}, edit and delete their own post-it.
 
