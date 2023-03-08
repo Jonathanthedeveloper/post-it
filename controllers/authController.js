@@ -47,6 +47,8 @@ class AuthController {
 
             // send the token along side data for client to store 
             res
+                .headers('Authorization', token)
+                .cookie('token', token)
                 .status(201)
                 .json({ status: "success", message: "user created successfully", token, data: { user: createdUser } })
 
@@ -86,6 +88,8 @@ class AuthController {
 
             // returning the token along side the response for client to store
             res
+                .headers('Authorization', token)
+                .cookie('token', token)
                 .status(200)
                 .json({ status: "success", message: "user logged in successfully", token })
 
