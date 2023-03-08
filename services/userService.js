@@ -18,7 +18,7 @@ class UserService {
 
     async findOne(filter) {
         try {
-            return await this.model.findOne(filter);
+            return await this.model.findOne(filter).populate('posts');
         } catch (error) {
             throw error
         }
@@ -26,9 +26,17 @@ class UserService {
 
     async findAll(filter) {
         try {
-            return await this.model.find(filter);
+            return await this.model.find(filter).populate('posts');
         } catch (error) {
             throw error;
+        }
+    }
+
+    async update(filter, updateData) {
+        try {
+            return await this.model.updateOne(filter, updateData, { new: true, runValidators: true });
+        } catch (error) {
+            throw error
         }
     }
 
