@@ -14,6 +14,11 @@ const userSchema = new Schema({
         type: String,
         required: [true, "handle is required"],
         unique: true,
+    },
+    posts: {
+        type: [Schema.Types.ObjectId],
+        ref: 'Post',
+        unique: true,
     }
 }, {
     timestamps: true,
