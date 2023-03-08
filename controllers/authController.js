@@ -43,7 +43,7 @@ class AuthController {
 
 
             // sign user using json web tokens
-            const token = jwt.sign({ email: createdUser.email, id: createdUser._id }, process.env.JWT_SECRET_TOKEN, { expiresIn: JWT_EXPIRES_IN });
+            const token = jwt.sign({ email: createdUser.email, id: createdUser._id, handle: createdUser.handle }, process.env.JWT_SECRET_TOKEN, { expiresIn: JWT_EXPIRES_IN });
 
             req.header('Authorization', token)
 
@@ -84,7 +84,7 @@ class AuthController {
                 return next(new AppError(`User with that email does not exist`, 404));
 
             // signing the user if their password is correct
-            const token = jwt.sign({ email: foundUser.email, id: foundUser._id }, process.env.JWT_SECRET_TOKEN, { expiresIn: JWT_EXPIRES_IN });
+            const token = jwt.sign({ email: foundUser.email, id: foundUser._id, handle: foundUser.handle }, process.env.JWT_SECRET_TOKEN, { expiresIn: JWT_EXPIRES_IN });
 
 
             req.header('Authorization', token)
