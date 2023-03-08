@@ -1,5 +1,7 @@
+const Post = require("../models/PostModel");
 const postService = require("../services/postService");
 const userService = require("../services/userService");
+const APIFeatures = require("../utils/ApiFeaturesUtil");
 
 class PostController {
 
@@ -19,6 +21,31 @@ class PostController {
 
             res.status(201).json({ "status": "success", data: { post: newPost } })
 
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async getAPost(req, res, next) {
+        try {
+
+            const post = await postService.findOne({ _id: req.params.id });
+
+            if (!post)
+                return next(new AppError("Post not found", 404));
+
+            res.status(200).json({ "status": "success", data: { post } })
+
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    async getAllPosts(req, res, next) {
+        try {
+            const query = new APIFeatures(Post.find({}), req.query).limitFields().sort().paginate();
+            const posts = await query.query.populate('user');
+            res.status(200).json({ "status": "success", data: { posts } })
         } catch (error) {
             next(error)
         }

@@ -1,8 +1,8 @@
 Implement soft delete on all resources.
 
-Users can create, update or delete their accounts.
+Users can {create}, update or delete their accounts.
 
-Users can create, edit and delete their own post-it.
+Users can {create}, edit and delete their own post-it.
 
 Users can reply to a post-it, but a post-it’s reply can not have another reply. So replies are not recursive.
 
