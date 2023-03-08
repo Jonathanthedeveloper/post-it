@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const { createPost, getAllPosts, getAPost, likePost, unlikePost, editAPost } = require('../controllers/postController');
-const { createComment, getAllComments, getAComment, likeComment, unlikeComment } = require('../controllers/commentController');
+const { createComment, getAllComments, getAComment, likeComment, unlikeComment, editComment } = require('../controllers/commentController');
 
 
 // POST IT
@@ -21,6 +21,7 @@ router.post('/:postId/unlike', unlikePost)
 router.post('/:postId/comments', createComment)
 router.get('/:postId/comments', getAllComments)
 router.get('/:postId/comments/:commentId', getAComment)
+router.put('/:postId/comments/:commentId', editComment)
 
 // like and unlike a comment
 router.post('/:postId/comments/:commentId/like', likeComment)
