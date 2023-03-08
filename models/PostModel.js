@@ -17,9 +17,21 @@ const postSchema = new Schema({
     likes: {
         type: [Schema.Types.ObjectId],
         ref: "User"
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    deletedAt: {
+        type: Date,
     }
 
 }, { timestamps: true });
+
+postSchema.pre(/^find/, function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next()
+})
 
 const Post = model('Post', postSchema);
 module.exports = Post

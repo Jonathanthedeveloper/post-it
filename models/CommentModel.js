@@ -13,9 +13,21 @@ const commentSchema = new Schema({
     likes: {
         type: [Schema.Types.ObjectId],
         ref: "User"
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false
+    },
+    deletedAt: {
+        type: Date
     }
 
 }, { timestamps: true });
+
+commentSchema.pre(/^find/, function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next()
+})
 
 const Comment = model('Comment', commentSchema);
 module.exports = Comment

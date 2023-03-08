@@ -1,16 +1,16 @@
 Implement soft delete on all resources.
 
-Users can {create}, {update} or delete their accounts.
+Users can {create}, {update} or {delete} their accounts.✅
 
-Users can {create}, {edit} and delete their own post-it.
+Users can {create}, {edit} and {delete} their own post-it.✅
 
 Users can reply to a post-it, but a post-it’s reply can not have another reply. So replies are not recursive. ✅
 
-A post-it’s author cannot delete replies to their own post-its unless it is their own reply; if they delete their post-it the replies remain.
+A post-it’s author cannot delete replies to their own post-its unless it is their own reply; if they delete their post-it the replies remain.✅
 
-A deleted comment should not be returned in a response.
+A deleted comment should not be returned in a response.✅
 
-Users can delete their own post-its’ replies. [ User-A can delete his/her own reply and cannot delete User-B replies]
+Users can delete their own post-its’ replies. [ User-A can delete his/her own reply and cannot delete User-B replies]✅
 
 When returning post-its they should be sorted by newest first. That is, newly created post-its should come first and the old ones last. ✅
 

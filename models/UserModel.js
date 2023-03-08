@@ -23,10 +23,22 @@ const userSchema = new Schema({
         type: [Schema.Types.ObjectId],
         ref: 'Post',
         unique: true,
+    },
+    isDeleted: {
+        type: Boolean,
+        default: false,
+    },
+    deletedAt: {
+        type: Date,
     }
 }, {
     timestamps: true,
 });
+
+userSchema.pre(/^find/, function (next) {
+    this.find({ isDeleted: { $ne: true } });
+    next()
+})
 
 const User = model('User', userSchema);
 module.exports = User;
