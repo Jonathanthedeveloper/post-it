@@ -34,7 +34,7 @@ class UserService {
 
     async update(filter, updateData) {
         try {
-            return await this.model.updateOne(filter, updateData, { new: true, runValidators: true });
+            return await this.model.findOneAndUpdate(filter, updateData, { new: true, runValidators: true });
         } catch (error) {
             throw error
         }
