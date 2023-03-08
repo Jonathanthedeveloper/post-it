@@ -11,11 +11,15 @@ class PostService {
     }
 
     async findOne(filter) {
-        return await this.model.findOne(filter).populate('user')
+        return await this.model.findOne(filter).populate('user comments')
     }
 
     async findAll(filter = {}) {
-        return await this.model.find(filter).populate('user')
+        return await this.model.find(filter).populate('user comments')
+    }
+
+    async update(filter, updateData) {
+        return await this.model.updateOne(filter, updateData, { new: true, runValidators: true })
     }
 }
 
