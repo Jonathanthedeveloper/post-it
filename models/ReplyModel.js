@@ -16,7 +16,7 @@ const replySchema = new Schema({
     },
     isDeleted: {
         type: Boolean,
-        default: false
+        default: false,
     },
     deletedAt: {
         type: Date
