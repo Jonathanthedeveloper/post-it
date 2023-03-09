@@ -12,13 +12,14 @@ class UserService {
         try {
             return await this.model.create(userData);
         } catch (error) {
+            console.log(error)
             throw error
         }
     }
 
-    async findOne(filter) {
+    async findOne(filter, projection = { __v: 0 }) {
         try {
-            return await this.model.findOne(filter).populate('posts');
+            return await this.model.findOne(filter, projection).populate('posts');
         } catch (error) {
             throw error
         }
@@ -32,6 +33,12 @@ class UserService {
         }
     }
 
+    /**
+     * 
+     * @param {query} filter 
+     * @param {object} updateData 
+     * @returns 
+     */
     async update(filter, updateData) {
         try {
             return await this.model.findOneAndUpdate(filter, updateData, { new: true, runValidators: true });

@@ -1,6 +1,9 @@
 const { Schema, model } = require('mongoose');
 
 const userSchema = new Schema({
+    name: {
+        type: String,
+    },
     email: {
         type: String,
         required: [true, "email is required"],
@@ -26,7 +29,7 @@ const userSchema = new Schema({
     posts: {
         type: [Schema.Types.ObjectId],
         ref: 'Post',
-        unique: true,
+        default: []
     },
     isDeleted: {
         type: Boolean,
@@ -43,6 +46,14 @@ userSchema.pre(/^find/, function (next) {
     this.find({ isDeleted: { $ne: true } });
     next()
 })
+
+userSchema.pre('save', function (next) {
+    // if(this.isNew){
+    //     this
+    // }
+    console.log(this)
+    next();
+});
 
 const User = model('User', userSchema);
 module.exports = User;

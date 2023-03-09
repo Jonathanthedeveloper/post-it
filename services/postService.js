@@ -10,8 +10,8 @@ class PostService {
         return await this.model.create(postData)
     }
 
-    async findOne(filter) {
-        return await this.model.findOne(filter).populate('user replies likes')
+    async findOne(filter, projection = { __v: 0, isDeleted: 0 }) {
+        return await this.model.findOne(filter, projection).populate('user replies likes')
     }
 
     async findAll(filter = {}) {
