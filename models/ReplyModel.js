@@ -1,7 +1,7 @@
 const { Schema, model } = require('mongoose');
 
 
-const commentSchema = new Schema({
+const replySchema = new Schema({
     content: {
         type: String,
     },
@@ -24,10 +24,10 @@ const commentSchema = new Schema({
 
 }, { timestamps: true });
 
-commentSchema.pre(/^find/, function (next) {
+replySchema.pre(/^find(?!By)/, function (next) {
     this.find({ isDeleted: { $ne: true } });
     next()
 })
 
-const Comment = model('Comment', commentSchema);
-module.exports = Comment
+const Reply = model('Reply', replySchema);
+module.exports = Reply

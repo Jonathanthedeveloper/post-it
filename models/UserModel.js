@@ -15,6 +15,10 @@ const userSchema = new Schema({
         required: [true, "handle is required"],
         unique: true,
     },
+    profilePicture: {
+        type: String,
+        required: [true, "profile picture is required"],
+    },
     bio: {
         type: String,
         max: 250
