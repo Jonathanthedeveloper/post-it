@@ -11,11 +11,11 @@ class PostService {
     }
 
     async findOne(filter) {
-        return await this.model.findOne(filter).populate('user comments likes')
+        return await this.model.findOne(filter).populate('user replies likes')
     }
 
     async findAll(filter = {}) {
-        return await this.model.find(filter).populate('user comments likes')
+        return await this.model.find(filter).populate('user replies likes')
     }
 
     async update(filter, updateData) {

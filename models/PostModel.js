@@ -10,9 +10,9 @@ const postSchema = new Schema({
         ref: 'User',
         required: true
     },
-    comments: {
+    replies: {
         type: [Schema.Types.ObjectId],
-        ref: "Comment"
+        ref: "Reply"
     },
     likes: {
         type: [Schema.Types.ObjectId],
@@ -32,6 +32,23 @@ postSchema.pre(/^find/, function (next) {
     this.find({ isDeleted: { $ne: true } });
     next()
 })
+
+// postSchema.post(/^find/, function (docs, next) {
+//     if (docs.isDeleted) {
+//         const post = {
+//             _id: docs._id,
+//             content: "This post has been deleted",
+//             likes: docs.likes,
+//             replies: docs.replies,
+//             user: docs.user
+//         }
+
+//         console.log(post);
+//         next();
+//         return post;
+//     }
+//     next();
+// });
 
 const Post = model('Post', postSchema);
 module.exports = Post

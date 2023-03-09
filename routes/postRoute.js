@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const { createPost, getAllPosts, getAPost, likePost, unlikePost, editAPost, deletePost } = require('../controllers/postController');
-const { createComment, getAllComments, getAComment, likeComment, unlikeComment, editComment, deleteComment } = require('../controllers/commentController');
+const { createReply, getAllReplies, getAReply, likeReply, unlikeReply, editReply, deleteReply } = require('../controllers/replyController');
 
 
 // POST IT
@@ -18,15 +18,15 @@ router.post('/:postId/like', likePost)
 router.post('/:postId/unlike', unlikePost)
 
 
-// COMMENTS ON A POST
-router.post('/:postId/comments', createComment)
-router.get('/:postId/comments', getAllComments)
-router.get('/:postId/comments/:commentId', getAComment)
-router.put('/:postId/comments/:commentId', editComment)
-router.delete('/:postId/comments/:commentId', deleteComment)
+// REPLIES ON A POST
+router.post('/:postId/replies', createReply)
+router.get('/:postId/replies', getAllReplies)
+router.get('/:postId/replies/:replyId', getAReply)
+router.put('/:postId/replies/:replyId', editReply)
+router.delete('/:postId/replies/:replyId', deleteReply)
 
-// like and unlike a comment
-router.post('/:postId/comments/:commentId/like', likeComment)
-router.post('/:postId/comments/:commentId/unlike', unlikeComment)
+// like and unlike a Reply
+router.post('/:postId/replies/:replyId/like', likeReply)
+router.post('/:postId/replies/:replyId/unlike', unlikeReply)
 
 module.exports = router;

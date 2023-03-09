@@ -1,6 +1,6 @@
-const Comment = require("../models/CommentModel");
+const Comment = require("../models/ReplyModel");
 
-class CommentService {
+class ReplyService {
     constructor(model) {
         this.model = model
     }
@@ -22,4 +22,4 @@ class CommentService {
     }
 }
 
-module.exports = new CommentService(Comment);
+module.exports = new ReplyService(Comment);

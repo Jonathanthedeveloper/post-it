@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Post = require("../models/PostModel");
 const postService = require("../services/postService");
 const userService = require("../services/userService");
@@ -35,6 +36,10 @@ class PostController {
             if (!post)
                 return next(new AppError("Post not found", 404));
 
+            if (post.isDeleted) {
+                post.content = "this post has been deleted"
+            }
+
             res.status(200).json({ "status": "success", data: { post } })
 
         } catch (error) {
@@ -45,7 +50,7 @@ class PostController {
     async getAllPosts(req, res, next) {
         try {
             const query = new APIFeatures(Post.find({}), req.query).limitFields().sort().paginate();
-            const posts = await query.query.populate('user comments');
+            const posts = await query.query.populate('user replies');
             res.status(200).json({ "status": "success", data: { posts } })
         } catch (error) {
             next(error)
@@ -58,7 +63,7 @@ class PostController {
             if (!post)
                 return next(new AppError("Post not found", 404));
 
-            if (post.likes.includes(req.user.id))
+            if (post.likes.some(like => like._id.toString() === req.user.id))
                 return next(new AppError("Post already liked", 400));
 
             const likedPost = await postService.update({ _id: req.params.postId }, { $push: { likes: req.user.id } });
@@ -74,7 +79,7 @@ class PostController {
             if (!post)
                 return next(new AppError("Post not found", 404));
 
-            if (!post.likes.includes(req.user.id))
+            if (!post.likes.some(like => like._id.toString() === req.user.id))
                 return next(new AppError("Post not liked already", 400));
 
             const unlikedPost = await postService.update({ _id: req.params.postId }, { $pull: { likes: req.user.id } });

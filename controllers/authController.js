@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const userService = require("../services/userService");
 const { JWT_EXPIRES_IN } = require('../config');
 const AppError = require('../utils/AppErrorUtil');
+const AvatarGenerator = require('../utils/profilePictureUtil');
 
 
 
@@ -30,12 +31,15 @@ class AuthController {
             const salt = await bcrypt.genSalt(10);
             const hash = await bcrypt.hash(req.body.password, salt)
 
+            const profilePicture = await AvatarGenerator.generateRandomAvatar(req.body.email);
+
 
             // getting the user's data and adding the hashed password to it
             const userData = {
                 email: req.body.email,
                 handle: req.body.handle,
-                password: hash
+                password: hash,
+                profilePicture
             }
 
 
