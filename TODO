@@ -1,0 +1,52 @@
+Implement soft delete on all resources.
+
+Users can {create}, {update} or {delete} their accounts.✅
+
+Users can {create}, {edit} and {delete} their own post-it.✅
+
+Users can reply to a post-it, but a post-it’s reply can not have another reply. So replies are not recursive. ✅
+
+A post-it’s author cannot delete replies to their own post-its unless it is their own reply; if they delete their post-it the replies remain.✅
+
+A deleted reply should not be returned in a response.✅
+
+Users can delete their own post-its’ replies. [ User-A can delete his/her own reply and cannot delete User-B replies]✅
+
+When returning post-its they should be sorted by newest first. That is, newly created post-its should come first and the old ones last. ✅
+
+Decide what you will do with deleted post-its, and in your readme, explain what you later did.
+
+Authentication Routes
+POST /api/v1/auth/signup: Create a new user account ✅
+POST /api/v1/auth/login: Authenticate a user and generate a JWT token for further requests ✅
+GET /api/v1/auth/me: Get the details of the currently authenticated user
+
+User Routes
+GET /api/v1/users: Get a list of all users ✅
+GET /api/v1/users/:id: Get the details of a specific user ✅
+PUT /api/v1/users/:id: Update the details of a specific user ✅
+DELETE /api/v1/users/:id: Delete a specific user ✅
+
+GET /api/v1/users/:id/posts: Get all posts of a specific user ✅
+GET /api/v1/users/:id/followers: Get all followers of a specific user
+GET /api/v1/users/:id/following: Get all users that a specific user is following
+POST /api/v1/users/:id/follow: Follow a specific user
+POST /api/v1/users/:id/unfollow: Unfollow a specific user
+
+Post Routes
+GET /api/v1/posts: Get a list of all posts ✅
+GET /api/v1/posts/:id: Get the details of a specific post ✅
+POST /api/v1/posts: Create a new post ✅
+POST /api/v1/posts/:id/like: Like a specific post ✅
+POST /api/v1/posts/:id/unlike: Unlike a specific post ✅
+PUT /api/v1/posts/:id: Update the details of a specific post ✅
+DELETE /api/v1/posts/:id: Delete a specific post ✅
+POST /api/v1/posts/:id/reply: reply on a specific post ✅
+PUT /api/v1/posts/:id/reply/:replyId: Update a reply on a specific post ✅
+GET /api/v1/posts/:id/reply/:replyId: Get reply on a specific post ✅
+
+DELETE /api/v1/posts/:id/reply/:replyId: Delete a reply on a specific post ✅
+
+Search Routes
+GET /api/v1/search/users?q=:searchQuery: Search for users based on a search query
+GET /api/v1/search/posts?q=:searchQuery: Search for posts based on a search query
