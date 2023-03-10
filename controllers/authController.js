@@ -131,6 +131,46 @@ class AuthController {
             next(error);;
         }
     }
+
+
+    /**
+     * gets details of currently authenticated user
+     * @param {Request} req 
+     * @param {Response} res 
+     * @param {NextFunction} next 
+     * 
+     * ALGORITHM:
+     * get the user's data from the request body
+     * check if the userexists
+     * if user does not exist, return an error
+     * else return the user's data
+     */
+    async getMyProfile(req, res, next) {
+
+        try {
+
+
+            // gettting the user from the database
+            const currentUser = await userService.findOne(
+                {
+                    $or: [{ $and: [{ _id: req.user.id }, { email: req.user.email }] },
+                    { $and: [{ _id: req.user.id }, { handle: req.user.handle }] }]
+                },
+                { password: 0, isDeleted: 0, __v: 0 }
+            );
+
+            // no user! then man ain't logged in you know
+            if (!currentUser) {
+                return next(new AppError(`you are not logged in`, 401));
+            }
+
+            // send response to client
+            res.status(200).json({ status: "success", message: "profile fetched successfully", data: { user: currentUser } })
+        } catch (error) {
+            next(error)
+        }
+
+    }
 }
 
 module.exports = new AuthController()

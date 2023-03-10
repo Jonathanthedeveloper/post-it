@@ -17,8 +17,8 @@ When returning post-its they should be sorted by newest first. That is, newly cr
 Decide what you will do with deleted post-its, and in your readme, explain what you later did.
 
 Authentication Routes
-POST /api/v1/auth/signup: Create a new user account
-POST /api/v1/auth/login: Authenticate a user and generate a JWT token for further requests
+POST /api/v1/auth/signup: Create a new user account ✅
+POST /api/v1/auth/login: Authenticate a user and generate a JWT token for further requests ✅
 GET /api/v1/auth/me: Get the details of the currently authenticated user
 
 User Routes

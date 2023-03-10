@@ -17,9 +17,9 @@ class UserService {
         }
     }
 
-    async findOne(filter, projection = { __v: 0 }) {
+    async findOne(filter, projection = { __v: 0, isDeleted: 0 }) {
         try {
-            return await this.model.findOne(filter, projection).populate('posts');
+            return await this.model.findOne(filter, projection).populate({ path: "posts", select: "-isDeleted -__v" }).select(projection);
         } catch (error) {
             throw error
         }
