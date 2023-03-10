@@ -14,6 +14,7 @@ const app = express();
 
 // Setting Up server configurations and middlewares
 app.use(express.json()); // tells express to use json
+// app.use(express.urlencoded({ extended: true }))
 app.use(morgan('dev'));  // some development stuff 
 app.use(cookieParser()); // cookie parser
 app.use('/api/v1', rootRoute)
