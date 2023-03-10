@@ -12,7 +12,6 @@ class APIFeatures {
         this.queryString = queryString;
     }
 
-
     /**
      * this limits the fields that are returned from the database
      * @returns {this}
