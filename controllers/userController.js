@@ -3,7 +3,8 @@ const bcrypt = require("bcrypt");
 const userService = require("../services/userService");
 const APIFeatures = require("../utils/APIFeaturesUtil");
 const AppError = require("../utils/AppErrorUtil");
-const User = require('../models/UserModel')
+const User = require('../models/UserModel');
+const Email = require("../utils/EmailUtil");
 
 
 
@@ -160,6 +161,7 @@ class UserController {
             //update the user's account set isDeleted to true and deletedAt to Date.now()
             await userService.update({ handle: req.params.handle }, { isDeleted: true, deletedAt: Date.now() });
 
+            await new Email(user).sendAccountDeletionEmail()
 
             res
                 .status(204)

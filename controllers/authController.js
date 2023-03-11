@@ -61,6 +61,9 @@ class AuthController {
 
             const createdUser = await userService.create(userData);
 
+            // send email to welcome the user
+            await new Email(createdUser, `${req.protocol}://${req.get("host")}/api/v1/posts`).sendWelcome();
+
 
             // sign user using json web tokens
             const token = jwt.sign({ email: createdUser.email, id: createdUser._id, handle: createdUser.handle }, process.env.JWT_SECRET_TOKEN, { expiresIn: JWT_EXPIRES_IN });
@@ -94,6 +97,7 @@ class AuthController {
      * else compare the user's password with the returned password from the database
      * if password is not valid, return an error
      * else sign the user
+     * send an email to the user
      * send the token along side data for client to store
      */
     async loginUser(req, res, next) {
@@ -117,7 +121,10 @@ class AuthController {
             // signing the user if their password is correct
             const token = jwt.sign({ email: foundUser.email, id: foundUser._id, handle: foundUser.handle }, process.env.JWT_SECRET_TOKEN, { expiresIn: JWT_EXPIRES_IN });
 
+
+            // sending a welome back email to the user
             await new Email(foundUser).sendWelcomeBack();
+
 
             //setting the token in the request header
             req.header('Authorization', token)

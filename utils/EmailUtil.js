@@ -34,10 +34,9 @@ class Email {
         const html = await ejs.renderFile(`${__dirname}/../views/emails/${template}.ejs`, { name: this.name, url: this.url });
 
 
-
         const options = {
             from: 'Post It',
-            to: "amobijonathan2@gmail.com",
+            to: this.to,
             subject,
             text: convert(html),
             html,
