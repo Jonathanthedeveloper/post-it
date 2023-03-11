@@ -69,7 +69,7 @@ class AuthController {
 
             // send the token along side data for client to store 
             res
-                .cookie('token', token)
+                .cookie('token', token, { httpOnly: true, secure: true, maxAge: process.env.COOKIE_MAX_AGE })
                 .status(201)
                 .json({ status: "success", message: "user created successfully", token, data: { user: { email: createdUser.email, handle: createdUser.handle } } })
 
@@ -123,7 +123,7 @@ class AuthController {
 
             // returning the token along side the response for client to store
             res
-                .cookie('token', token)
+                .cookie('token', token, { httpOnly: true, secure: true, maxAge: process.env.COOKIE_MAX_AGE })
                 .status(200)
                 .json({ status: "success", message: "user logged in successfully", token })
 
@@ -170,6 +170,23 @@ class AuthController {
             next(error)
         }
 
+    }
+
+    /**
+     * logs user out by deleting the token from the client's cookie
+     * @param {Request} req 
+     * @param {Response} res 
+     * @param {NextFunction} next 
+     */
+    async logoutUser(req, res, next) {
+        try {
+            res
+                .clearCookie('token')
+                .status(200)
+                .json({ status: "success", message: "user logged out successfully" })
+        } catch (error) {
+            next(error)
+        }
     }
 }
 
