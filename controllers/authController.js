@@ -6,6 +6,7 @@ const userService = require("../services/userService");
 const { JWT_EXPIRES_IN } = require('../config');
 const AppError = require('../utils/AppErrorUtil');
 const AvatarGenerator = require('../utils/profilePictureUtil');
+const Email = require('../utils/EmailUtil');
 
 
 /**
@@ -116,6 +117,7 @@ class AuthController {
             // signing the user if their password is correct
             const token = jwt.sign({ email: foundUser.email, id: foundUser._id, handle: foundUser.handle }, process.env.JWT_SECRET_TOKEN, { expiresIn: JWT_EXPIRES_IN });
 
+            await new Email(foundUser).sendWelcomeBack();
 
             //setting the token in the request header
             req.header('Authorization', token)
