@@ -44,7 +44,22 @@ const schemas = {
     query: Joi.object({
         q: Joi.string().required()
     })
+    ,
+    password: Joi.object({
+        password: Joi.string().min(6).required(),
+    }),
 
+    email: Joi.object({
+        email: Joi.string().email().required(),
+    }),
+
+    userId: Joi.object({
+        userId: Joi.string().required(),
+    })
+    ,
+    resetPasswordSchema: Joi.object({
+        resetPassword: Joi.string(),
+    })
 
 };
 

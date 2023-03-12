@@ -25,7 +25,7 @@ class UserController {
      */
     async getAUser(req, res, next) {
         try {
-            const foundUser = await userService.findOne({ handle: req.params.handle }, { password: 0, isDeleted: 0, __v: 0 });
+            const foundUser = await userService.findOne({ handle: req.params.handle }, { password: 0, isDeleted: 0, __v: 0, resetPassword: 0, resetPasswordExpires: 0 });
 
             if (!foundUser) return next(new AppError(`User with that handle does not exist`, 404));
 
@@ -161,7 +161,7 @@ class UserController {
             //update the user's account set isDeleted to true and deletedAt to Date.now()
             await userService.update({ handle: req.params.handle }, { isDeleted: true, deletedAt: Date.now() });
 
-            await new Email(user).sendAccountDeletionEmail()
+            new Email(user).sendAccountDeletionEmail()
 
             res
                 .status(204)

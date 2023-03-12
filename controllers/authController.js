@@ -1,11 +1,13 @@
+const crypto = require('crypto');
+
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 
 
 const userService = require("../services/userService");
-const { JWT_EXPIRES_IN } = require('../config');
+const { JWT_EXPIRES_IN, PASSWORD_RESET_EXPIRES_IN } = require('../config');
 const AppError = require('../utils/AppErrorUtil');
-const AvatarGenerator = require('../utils/profilePictureUtil');
+const generateRandomAvatar = require('../utils/profilePictureUtil');
 const Email = require('../utils/EmailUtil');
 
 
@@ -47,7 +49,7 @@ class AuthController {
             const hash = await bcrypt.hash(req.body.password, salt)
 
             // generating a random profile picture for the user
-            const imageUrl = await AvatarGenerator.generateRandomAvatar(req.body.email);
+            const imageUrl = await generateRandomAvatar(req.body.email);
 
 
             // getting the user's data and adding the hashed password to it
@@ -108,7 +110,7 @@ class AuthController {
             // checking if the user exists in the database
             const foundUser = await userService.findOne({ $or: [{ email: userData.email }, { handle: userData.handle }] });
             if (!foundUser)
-                return next(new AppError(`User with that email does not exist`, 404))
+                return next(new AppError(`Invalid email or password`, 404))
 
 
             // Comparing User's password with the returned password from the database
@@ -116,7 +118,7 @@ class AuthController {
 
             // throwing an error if password is not valid
             if (!passwordIsValid)
-                return next(new AppError(`User with that email does not exist`, 404));
+                return next(new AppError(`Invalid email or password`, 404));
 
             // signing the user if their password is correct
             const token = jwt.sign({ email: foundUser.email, id: foundUser._id, handle: foundUser.handle }, process.env.JWT_SECRET_TOKEN, { expiresIn: JWT_EXPIRES_IN });
@@ -193,6 +195,104 @@ class AuthController {
                 .clearCookie('token')
                 .status(200)
                 .json({ status: "success", message: "user logged out successfully" })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    /**
+     * resets a user's password 
+     * @param {Request} req 
+     * @param {Response} res 
+     * @param {NextFunction} next
+     * 
+     * ALGORITHM:
+     * get the user's data from the request body
+     * check if the userexists
+     * if user does not exist, return an error
+     * else generate a random password
+     * hash the password
+     * update the user's password
+     * send an email to the user with a reset password link
+ 
+     */
+    async forgotPassword(req, res, next) {
+        try {
+            const userData = { ...req.body };
+
+            // checking if the user exists in the database
+            const foundUser = await userService.findOne({ $or: [{ email: userData.email }, { handle: userData.handle }] });
+            if (!foundUser)
+                return next(new AppError(`User with that email does not exist`, 404))
+
+            // generating a random password
+            const randomPassword = crypto.randomBytes(37).toString("hex");
+
+
+            // hashing the password
+            const salt = await bcrypt.genSalt(10);
+            const hash = await bcrypt.hash(randomPassword, salt)
+
+            // updating the user's password
+            const updatedUser = await userService.update({ _id: foundUser._id }, { resetPassword: hash, resetPasswordExpires: Date.now() + PASSWORD_RESET_EXPIRES_IN });
+
+            // sending an email to the user with a reset password link
+            const resetLink = `${req.protocol}://${req.get("host")}/api/v1/auth/reset-password/${updatedUser._id}/${randomPassword}`;
+            new Email(updatedUser, resetLink, randomPassword).sendPasswordReset();
+
+            // send response to client
+            res.status(200).json({ status: "success", message: "password reset link sent successfully", randomPassword })
+        } catch (error) {
+            next(error)
+        }
+    }
+
+    /**
+     * resets a user's password
+     * @param {Request} req 
+     * @param {Response} res 
+     * @param {NextFunction} next 
+     */
+    async resetPassword(req, res, next) {
+        try {
+            const { resetPassword, userId } = req.params;
+
+            // finding the user
+            const user = await userService.findOne({ _id: userId, resetPasswordExpires: { $gt: Date.now() } });
+            if (!user) {
+                return next(new AppError("password reset token is invalid or has expired", 400));
+            }
+
+            // checking if the reset password is correct
+            const isValidResetPassword = await bcrypt.compare(resetPassword, user.resetPassword);
+
+            // throwing an error if password is not valid
+            if (!isValidResetPassword) {
+                return next(new AppError("password reset token is invalid or has expired", 400));
+            }
+
+            // hashing the password
+            const salt = await bcrypt.genSalt(10);
+            const hash = await bcrypt.hash(req.body.password, salt)
+
+            // updating the user's password
+            user.password = hash;
+            user.resetPassword = undefined;
+            user.resetPasswordExpires = undefined;
+            await user.save();
+
+            // this didn't work
+            // const updatedUser = await userService.update({ _id: userId }, { password: hash, resetPassword: undefined, resetPasswordExpires: undefined });
+
+            // notifying the user of a password reset on their account just in case
+            new Email(updatedUser).sendPasswordChanged();
+
+            res
+                .status(200)
+                .json({ status: "success", message: "password reset successfully", data: null })
+
+
+
         } catch (error) {
             next(error)
         }
