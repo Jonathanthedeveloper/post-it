@@ -37,6 +37,12 @@ const userSchema = new Schema({
     },
     deletedAt: {
         type: Date,
+    },
+    resetPasswordExpires: {
+        type: Date,
+    },
+    resetPassword: {
+        type: String,
     }
 }, {
     timestamps: true,

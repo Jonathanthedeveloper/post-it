@@ -10,10 +10,11 @@ const { convert } = require('html-to-text');
  * @param {string} url - The url to be sent to the user
  */
 class Email {
-    constructor(user, url) {
+    constructor(user, url, token) {
         this.to = user.email;
         this.name = user?.name?.split(' ')[0] || user?.handle;
         this.url = url;
+        this.token = token;
 
 
     }
@@ -31,7 +32,7 @@ class Email {
 
     async _send(template, subject) {
 
-        const html = await ejs.renderFile(`${__dirname}/../views/emails/${template}.ejs`, { name: this.name, url: this.url });
+        const html = await ejs.renderFile(`${__dirname}/../views/emails/${template}.ejs`, { name: this.name, url: this.url, token: this.token });
 
 
         const options = {
