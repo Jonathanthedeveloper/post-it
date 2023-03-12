@@ -6,6 +6,7 @@ const userService = require("../services/userService");
 const { JWT_EXPIRES_IN } = require('../config');
 const AppError = require('../utils/AppErrorUtil');
 const AvatarGenerator = require('../utils/profilePictureUtil');
+const Email = require('../utils/EmailUtil');
 
 
 /**
@@ -60,6 +61,9 @@ class AuthController {
 
             const createdUser = await userService.create(userData);
 
+            // send email to welcome the user
+            await new Email(createdUser, `${req.protocol}://${req.get("host")}/api/v1/posts`).sendWelcome();
+
 
             // sign user using json web tokens
             const token = jwt.sign({ email: createdUser.email, id: createdUser._id, handle: createdUser.handle }, process.env.JWT_SECRET_TOKEN, { expiresIn: JWT_EXPIRES_IN });
@@ -69,7 +73,7 @@ class AuthController {
 
             // send the token along side data for client to store 
             res
-                .cookie('token', token)
+                .cookie('token', token, { httpOnly: true, secure: true, maxAge: process.env.COOKIE_MAX_AGE })
                 .status(201)
                 .json({ status: "success", message: "user created successfully", token, data: { user: { email: createdUser.email, handle: createdUser.handle } } })
 
@@ -93,6 +97,7 @@ class AuthController {
      * else compare the user's password with the returned password from the database
      * if password is not valid, return an error
      * else sign the user
+     * send an email to the user
      * send the token along side data for client to store
      */
     async loginUser(req, res, next) {
@@ -117,13 +122,17 @@ class AuthController {
             const token = jwt.sign({ email: foundUser.email, id: foundUser._id, handle: foundUser.handle }, process.env.JWT_SECRET_TOKEN, { expiresIn: JWT_EXPIRES_IN });
 
 
+            // sending a welome back email to the user
+            await new Email(foundUser).sendWelcomeBack();
+
+
             //setting the token in the request header
             req.header('Authorization', token)
 
 
             // returning the token along side the response for client to store
             res
-                .cookie('token', token)
+                .cookie('token', token, { httpOnly: true, secure: true, maxAge: process.env.COOKIE_MAX_AGE })
                 .status(200)
                 .json({ status: "success", message: "user logged in successfully", token })
 
@@ -170,6 +179,23 @@ class AuthController {
             next(error)
         }
 
+    }
+
+    /**
+     * logs user out by deleting the token from the client's cookie
+     * @param {Request} req 
+     * @param {Response} res 
+     * @param {NextFunction} next 
+     */
+    async logoutUser(req, res, next) {
+        try {
+            res
+                .clearCookie('token')
+                .status(200)
+                .json({ status: "success", message: "user logged out successfully" })
+        } catch (error) {
+            next(error)
+        }
     }
 }
 
