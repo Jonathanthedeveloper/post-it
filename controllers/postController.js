@@ -2,7 +2,7 @@ const { default: mongoose } = require("mongoose");
 const Post = require("../models/PostModel");
 const postService = require("../services/postService");
 const userService = require("../services/userService");
-const APIFeatures = require("../utils/ApiFeaturesUtil");
+const APIFeatures = require("../utils/APIFeaturesUtil");
 const AppError = require("../utils/AppErrorUtil");
 
 
