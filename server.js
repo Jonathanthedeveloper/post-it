@@ -9,7 +9,7 @@ const { PORT } = require('./config');
 // Connecting to database using Mongoose ORM
 (async function () {
     try {
-        await connect(`${process.env.LOCAL_URI}/postIt`);
+        await connect(process.env.ONLINE_URI);
         console.log('connected to database')
     } catch (error) {
         console.error(`something went wrong while connecting to database: ${error.message}`);
