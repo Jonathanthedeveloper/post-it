@@ -3,6 +3,8 @@ const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const ejs = require('ejs');
+const cors = require('cors');
+const helmet = require('helmet');
 
 
 const rootRoute = require('./routes/indexRoute')
@@ -14,8 +16,10 @@ const app = express();
 
 
 // Setting Up server configurations and middlewares
+app.use(helmet()); // helmet
+app.use(cors()); // cors
+app.use(express.urlencoded({ extended: true }))
 app.use(express.json()); // tells express to use json
-// app.use(express.urlencoded({ extended: true }))
 app.use(morgan('dev'));  // some development stuff 
 app.use(cookieParser()); // cookie parser
 app.set('view engine', 'ejs'); // setting up view engine for emails

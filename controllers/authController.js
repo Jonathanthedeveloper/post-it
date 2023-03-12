@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const userService = require("../services/userService");
 const { JWT_EXPIRES_IN } = require('../config');
 const AppError = require('../utils/AppErrorUtil');
-const AvatarGenerator = require('../utils/profilePictureUtil');
+const generateRandomAvatar = require('../utils/profilePictureUtil');
 const Email = require('../utils/EmailUtil');
 
 
@@ -47,7 +47,7 @@ class AuthController {
             const hash = await bcrypt.hash(req.body.password, salt)
 
             // generating a random profile picture for the user
-            const imageUrl = await AvatarGenerator.generateRandomAvatar(req.body.email);
+            const imageUrl = await generateRandomAvatar(req.body.email);
 
 
             // getting the user's data and adding the hashed password to it
