@@ -1,4 +1,4 @@
-Implement soft delete on all resources.
+Implement soft delete on all resources.✅
 
 Users can {create}, {update} or {delete} their accounts.✅
 
@@ -14,7 +14,7 @@ Users can delete their own post-its’ replies. [ User-A can delete his/her own 
 
 When returning post-its they should be sorted by newest first. That is, newly created post-its should come first and the old ones last. ✅
 
-Decide what you will do with deleted post-its, and in your readme, explain what you later did.
+Decide what you will do with deleted post-its, and in your readme, explain what you later did. ✅
 
 Authentication Routes
 POST /api/v1/auth/signup: Create a new user account ✅
