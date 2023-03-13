@@ -80,7 +80,7 @@ function validate(schemaName) {
         const { error } = schemaName.validate(req.body);
 
         if (error) {
-            return next(new AppError(error.details[0].message, 400));
+            return next(new AppError(error.details[0].message.replaceAll("\"", ""), 400));
         }
         next();
     };
@@ -101,7 +101,7 @@ function validateParams(schemaName) {
         const { error } = schemaName.validate(req.params);
 
         if (error) {
-            return next(new AppError(error.details[0].message, 400));
+            return next(new AppError(error.details[0].message.replaceAll("\"", ""), 400));
         }
         next();
     };
@@ -122,7 +122,7 @@ function validateQuery(schemaName) {
         const { error } = schemaName.validate(req.query);
 
         if (error) {
-            return next(new AppError(error.details[0].message, 400));
+            return next(new AppError(error.details[0].message.replaceAll("\"", ""), 400));
         }
         next();
     };
