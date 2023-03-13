@@ -32,10 +32,12 @@ const schemas = {
 
     postId: Joi.object({
         postId: Joi.string().required(),
+        replyId: Joi.string()
     }),
 
     replyId: Joi.object({
-        replyId: Joi.string().required(),
+        postId: Joi.string(),
+        replyId: Joi.string().required()
     }),
 
     handle: Joi.object({

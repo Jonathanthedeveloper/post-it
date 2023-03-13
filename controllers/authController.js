@@ -75,7 +75,7 @@ class AuthController {
 
             // send the token along side data for client to store 
             res
-                .cookie('token', token, { httpOnly: true, secure: true, maxAge: process.env.COOKIE_MAX_AGE })
+                .cookie('token', token)
                 .status(201)
                 .json({ status: "success", message: "user created successfully", token, data: { user: { email: createdUser.email, handle: createdUser.handle } } })
 
@@ -134,7 +134,7 @@ class AuthController {
 
             // returning the token along side the response for client to store
             res
-                .cookie('token', token, { httpOnly: true, secure: true, maxAge: process.env.COOKIE_MAX_AGE })
+                .cookie('token', token)
                 .status(200)
                 .json({ status: "success", message: "user logged in successfully", token })
 
