@@ -3,7 +3,7 @@ const router = express.Router();
 
 
 const authenticate = require('../middlewares/authenticate');
-const { validate, validateParams, schemas: { post, postId, replyId } } = require('../middlewares/validator');
+const { validate, validateParams, schemas: { post, postId, replyId, reply } } = require('../middlewares/validator');
 const { createPost, getAllPosts, getAPost, likePost, unlikePost, editAPost, deletePost } = require('../controllers/postController');
 const { createReply, getAllReplies, getAReply, likeReply, unlikeReply, editReply, deleteReply } = require('../controllers/replyController');
 
@@ -25,7 +25,7 @@ router.post('/:postId/unlike', validateParams(postId), authenticate, unlikePost)
 router.post('/:postId/replies', validateParams(postId), authenticate, createReply)
 router.get('/:postId/replies', validateParams(postId), authenticate, getAllReplies)
 router.get('/:postId/replies/:replyId', validateParams(postId), validateParams(replyId), authenticate, getAReply)
-router.put('/:postId/replies/:replyId', validateParams(postId), validateParams(replyId), authenticate, editReply)
+router.put('/:postId/replies/:replyId', validateParams(postId), validateParams(replyId), validate(reply), authenticate, editReply)
 router.delete('/:postId/replies/:replyId', validateParams(postId), validateParams(replyId), authenticate, deleteReply)
 
 // like and unlike a Reply

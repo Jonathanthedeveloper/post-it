@@ -114,8 +114,9 @@ class UserController {
             updatedUser.password = undefined; // remove the password from the response
             updatedUser.isDeleted = undefined; // remove the isDeleted from the response
 
+
             //return the updated user
-            res.status(200).json({ status: "success", data: { user: updatedUser } })
+            res.status(200).clearCookie('token').json({ status: "success", data: { user: updatedUser } })
 
 
         } catch (error) {
