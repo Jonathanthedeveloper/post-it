@@ -11,6 +11,7 @@ const rateLimit = require('express-rate-limit');
 const rootRoute = require('./routes/indexRoute')
 const globalErrorHandler = require('./controllers/errorController');
 const AppError = require('./utils/AppErrorUtil');
+const { renderBaseUrl } = require('./controllers/documentationController');
 
 
 const app = express();
@@ -33,6 +34,7 @@ app.use(cookieParser()); // cookie parser
 app.set('view engine', 'ejs'); // setting up view engine for emails
 app.use('/', limiter); // rate limiter
 app.use('/api/v1', rootRoute)
+app.get('/', renderBaseUrl)
 
 
 // handling unhandled routes

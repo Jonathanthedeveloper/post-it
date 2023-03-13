@@ -24,12 +24,12 @@ router.post('/:postId/unlike', validateParams(postId), authenticate, unlikePost)
 // REPLIES ON A POST
 router.post('/:postId/replies', validateParams(postId), authenticate, createReply)
 router.get('/:postId/replies', validateParams(postId), authenticate, getAllReplies)
-router.get('/:postId/replies/:replyId', validateParams(postId), validateParams(replyId), authenticate, getAReply)
-router.put('/:postId/replies/:replyId', validateParams(postId), validateParams(replyId), authenticate, editReply)
-router.delete('/:postId/replies/:replyId', validateParams(postId), validateParams(replyId), authenticate, deleteReply)
+router.get('/:postId/replies/:replyId', validateParams(postId), authenticate, getAReply)
+router.put('/:postId/replies/:replyId', validateParams(postId), authenticate, editReply)
+router.delete('/:postId/replies/:replyId', validateParams(postId), authenticate, deleteReply)
 
 // like and unlike a Reply
-router.post('/:postId/replies/:replyId/like', validateParams(postId), validateParams(replyId), authenticate, likeReply)
-router.post('/:postId/replies/:replyId/unlike', validateParams(postId), validateParams(replyId), authenticate, unlikeReply)
+router.post('/:postId/replies/:replyId/like', validateParams(postId), authenticate, likeReply)
+router.post('/:postId/replies/:replyId/unlike', validateParams(postId), authenticate, unlikeReply)
 
 module.exports = router;
