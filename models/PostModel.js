@@ -4,6 +4,7 @@ const { Schema, model } = require('mongoose');
 const postSchema = new Schema({
     content: {
         type: String,
+
     },
     user: {
         type: Schema.Types.ObjectId,
@@ -28,7 +29,7 @@ const postSchema = new Schema({
 
 }, { timestamps: true });
 
-postSchema.pre(/^find/, function (next) {
+postSchema.pre("find", function (next) {
     this.find({ isDeleted: { $ne: true } });
     next()
 })
