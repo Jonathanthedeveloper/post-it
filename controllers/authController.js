@@ -279,7 +279,7 @@ class AuthController {
             user.password = hash;
             user.resetPassword = undefined;
             user.resetPasswordExpires = undefined;
-            await user.save();
+            const updatedUser = await user.save();
 
             // this didn't work
             // const updatedUser = await userService.update({ _id: userId }, { password: hash, resetPassword: undefined, resetPasswordExpires: undefined });
